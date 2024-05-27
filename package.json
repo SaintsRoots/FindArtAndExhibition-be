@@ -1,7 +1,7 @@
 {
-  "name": "hovastore-support-be",
+  "name": "find-art-be",
   "version": "1.0.0",
-  "description": "Hova Ai Suport Backend",
+  "description": "FIND ART SYSTEM AND EXHIBITION API",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node ./build/src/index.js",

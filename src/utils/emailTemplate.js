@@ -47,3 +47,15 @@ export const sendEmailPersonBookedArts = (email, name, eventDetails) => {
 
   sendMail(emailTemplate);
 };
+
+// Approve Message
+
+export const sendEmailApproveArts = (email, name, updatedAt) => {
+  const emailTemplate = {
+    emailTo: email,
+    subject: "Approval Confirmation!",
+    message: `<p>Hi,${name}<br>Your Request for being An Artist has been confirmed!</p><p>Date ${updatedAt} Now you Can customize your Dashboard</p>`,
+  };
+
+  sendMail(emailTemplate);
+};

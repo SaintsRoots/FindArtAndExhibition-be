@@ -45,6 +45,30 @@ export const updateUserById = async (id, userData, file) => {
     img: result?.secure_url,
   });
 };
+// Approve status change
+export const approveStatusChange = async (id) => {
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+  let newStatus;
+  if (user.status === 'pending') {
+    newStatus = 'approved';
+  } else if (user.status === 'approved') {
+    newStatus = 'canceled';
+  } else if (user.status === 'canceled') {
+    newStatus = 'pending';
+  } else {
+    throw new Error('Invalid status');
+  }
+
+  user.status = newStatus;
+  await user.save();
+
+  return user;
+};
+
 
 // Service to delete a user by id
 export const deleteUserById = async (id) => {
@@ -70,39 +94,39 @@ export const loginUser = async (userData) => {
 
 // service for forgot password
 export const forgotPasswordService = async (userEmail) => {
-  const user = await User.findOne({email: userEmail});
-    if(!user){
-      throw new Error("user not found");
-    } 
-    
-    const resetCode = Math.floor(100000 + Math.random() * 900000);
-    await Code.create({
-      code: resetCode,
-      user: user._id,
-    });
-    const link = `https://hovastore-support-be.onrender.com/api/v1/users/reset-password`;
-    sendResetEmail(user.email, user.name, link, resetCode);
+  const user = await User.findOne({ email: userEmail });
+  if (!user) {
+    throw new Error("user not found");
+  }
+
+  const resetCode = Math.floor(100000 + Math.random() * 900000);
+  await Code.create({
+    code: resetCode,
+    user: user._id,
+  });
+  const link = `https://findartandexhibition-be.onrender.com/api/v1/users/reset-password`;
+  sendResetEmail(user.email, user.name, link, resetCode);
 };
 
 // service to reset password
 export const resetPasswordService = async (resetCode, password, confirmPassword) => {
-      const code = await Code.findOne({code: resetCode});
-      if(!code){
-        throw new Error("Invalid Code");
-      } 
-      const userId = code.user;
-      const user = await User.findById(userId);
-      if(!user){
-        throw new Error("user not found");
-      }
-      if(password != confirmPassword){
-        throw new Error("Two passwords does not match");
-      }
-      
-      const salt = await bcrypt.genSalt(10);
-      const hashedPass = await bcrypt.hash(password, salt);
-      await User.findByIdAndUpdate(userId, {password: hashedPass});
-      await Code.findByIdAndDelete(code._id);
+  const code = await Code.findOne({ code: resetCode });
+  if (!code) {
+    throw new Error("Invalid Code");
+  }
+  const userId = code.user;
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error("user not found");
+  }
+  if (password != confirmPassword) {
+    throw new Error("Two passwords does not match");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPass = await bcrypt.hash(password, salt);
+  await User.findByIdAndUpdate(userId, { password: hashedPass });
+  await Code.findByIdAndDelete(code._id);
 };
 
 
@@ -110,21 +134,21 @@ export const resetPasswordService = async (resetCode, password, confirmPassword)
 export const changePassword = async (id, passData) => {
   const { current_password, new_password, confirm_password } = passData;
   const user = await User.findById(id)
-    if(!user){
-      throw new Error("User not found");
-    }
-    const passwordMatch = await bcrypt.compare( current_password, user.password)
-    if(!passwordMatch){
-      throw new Error("Invalid Password");
-    }
-    if(new_password != confirm_password){
-      throw new Error("Two Passwords do not match");
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(new_password, salt);
-    await User.findByIdAndUpdate(id, {
-      password: hashedPassword,
-    });
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const passwordMatch = await bcrypt.compare(current_password, user.password)
+  if (!passwordMatch) {
+    throw new Error("Invalid Password");
+  }
+  if (new_password != confirm_password) {
+    throw new Error("Two Passwords do not match");
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(new_password, salt);
+  await User.findByIdAndUpdate(id, {
+    password: hashedPassword,
+  });
 };
 
 

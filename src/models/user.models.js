@@ -16,6 +16,30 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
         },
+        phone: {
+            type: String,
+        },
+        province: {
+            type: String,
+        },
+        district: {
+            type: String,
+        },
+        sector: {
+            type: String,
+        },
+        street: {
+            type: String,
+        },
+        status: {
+            type: String,
+            default: "pending",
+        },
+        role: {
+            type: String,
+            enum: ["Admin", "Artist", "User"],
+            default: "Artist",
+        },
         isAdmin: {
             type: Boolean,
             default: false,
