@@ -1,6 +1,6 @@
 // Importing services
 import * as UserService from "../services/users.services"
-import { sendEmailToAdmin } from "../utils/emailTemplate";
+import { sendEmailApproveArts, sendWelcomeEmailToAdmin } from "../utils/emailTemplate";
 import generateToken from "../utils/generateToken";
 import { validateCreateUser, validateUpdateUser, validateForgotPassword, validateResetPassword, ValidateChangePassword } from "../validations/users.validation";
 // getAllUsers controller
@@ -90,6 +90,26 @@ export const updateUser = async (req, res) => {
   }
 };
 
+// Approve status change
+export const approveStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UserService.approveStatusChange(id);
+    console.log(user.updatedAt)
+    sendEmailApproveArts(user.email, user.name, user.updatedAt);
+    return res.status(200).json({
+      status: "200",
+      message: `Account status changed to ${user.status}`,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "500",
+      message: "Failed to change account status",
+      error: error.message,
+    });
+  }
+};
 // deleteUser controller
 export const deleteUser = async (req, res) => {
   try {
@@ -117,7 +137,7 @@ export const login = async (req, res) => {
   try {
     const user = await UserService.loginUser(value);
     const token = generateToken(user._id);
-    sendEmailToAdmin(value.email, user.name)
+    sendWelcomeEmailToAdmin(value.email, user.name)
     res.status(200).json({
       message: "Logged in successfully",
       data: user,
@@ -136,11 +156,11 @@ export const login = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const { error, value } = validateForgotPassword(req.body);
-  if (error) {
-    return res.status(400).json({ message: error.details[0].message });
-  }
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
     await UserService.forgotPasswordService(value.email);
-    return res.status(200).json({message: "We sent you Code to reset password on your email"});
+    return res.status(200).json({ message: "We sent you Code to reset password on your email" });
   } catch (error) {
     return res.status(500).json({
       status: "500",
@@ -152,19 +172,19 @@ export const forgotPassword = async (req, res) => {
 
 // reset password controller
 export const resetPassword = async (req, res) => {
-    try{
-      const { error, value } = validateResetPassword(req.body);
-      if (error) {
-        return res.status(400).json({ message: error.details[0].message });
-      }
-      await UserService.resetPasswordService(value.code, value.password, value.confirmPassword);
-      return res.status(200).json({
-        status: "200",
-        message: "Password changed!.. you can now login with new password",
-      });
+  try {
+    const { error, value } = validateResetPassword(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    await UserService.resetPasswordService(value.code, value.password, value.confirmPassword);
+    return res.status(200).json({
+      status: "200",
+      message: "Password changed!.. you can now login with new password",
+    });
 
   }
-  catch(error){
+  catch (error) {
     return res.status(500).json({
       status: "500",
       message: "failed to reset password",
@@ -175,11 +195,11 @@ export const resetPassword = async (req, res) => {
 
 // controller to change password
 export const changePassword = async (req, res) => {
-  try {    
+  try {
     const { id } = req.params;
     const { error, value } = ValidateChangePassword(req.body);
-    if(error){
-      return res.status(400).json({ message: error.details[0].message});
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
     }
     await UserService.changePassword(id, value);
     return res.status(200).json({

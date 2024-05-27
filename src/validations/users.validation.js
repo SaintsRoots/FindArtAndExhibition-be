@@ -4,7 +4,7 @@ const createUserSchema = Joi.object({
     name: Joi.string().required().min(3).max(30),
     email: Joi.string().email().required(),
     password: Joi.string().required().min(3).max(50),
-    profile: Joi.string().optional(),
+    img: Joi.string().optional(),
 });
 
 // Validation schema for updating a user
@@ -12,8 +12,8 @@ const updateUserSchema = Joi.object({
     name: Joi.string().min(3).max(30).optional(),
     email: Joi.string().email().optional(),
     password: Joi.string().min(3).max(50).optional(),
-    profile: Joi.string().optional(),
-}).or('name', 'email', 'password', 'profile');
+    img: Joi.string().optional(),
+}).or('name', 'email', 'password', 'img');
 
 // Validation schema for user login
 const loginUserSchema = Joi.object({

@@ -20,6 +20,10 @@ const options = {
         {
             name: "Users",
             description: "Operations related to Users entities",
+        },
+        {
+            name: "Arts",
+            description: "Operations related to Arts entities",
         }
     ],
     paths: {
@@ -198,6 +202,35 @@ const options = {
                     },
                 },
             },
+            post: {
+                tags: ["Users"],
+                summary: "Approve User",
+                description: "Approve a Existing user status user by ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    201: {
+                        description: "User Approved successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "User not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
             delete: {
                 tags: ["Users"],
                 summary: "Delete User",
@@ -301,6 +334,194 @@ const options = {
                 },
             },
         },
+
+        // Arts
+        "/api/v1/arts": {
+            get: {
+              tags: ["Arts"],
+              summary: "Get All Arts",
+              description: "Retrieve all Arts from the database",
+              responses: {
+                200: {
+                  description: "Arts retrieved successfully",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+            post: {
+              tags: ["Arts"],
+              summary: "Create Arts",
+              description: "Create a new Arts in the database",
+              requestBody: {
+                content: {
+                  "multipart/form-data": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        description: { type: "string" },
+                        category: { type: "string" },
+                        price: { type: "number" },
+                        available_arts: { type: "number" },
+                        image: {
+                          type: "string",
+                          format: "binary",
+                          description: "Image file for the Arts"
+                        },
+                      },
+                    },
+                  },
+                },
+                required: true,
+              },
+              responses: {
+                201: {
+                  description: "Arts created successfully",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+          "/api/v1/arts/{id}": {
+            get: {
+              tags: ["Arts"],
+              summary: "Get Arts By ID",
+              description: "Retrieve a single Arts by its ID",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Arts retrieved successfully",
+                },
+                404: {
+                  description: "Arts not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+            put: {
+              tags: ["Arts"],
+              summary: "Update Arts",
+              description: "Update details of an existing Arts",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              requestBody: {
+                content: {
+                  "multipart/form-data": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        description: { type: "string" },
+                        category: { type: "string" },
+                        price: { type: "number" },
+                        available_arts: { type: "number" },
+                        image: {
+                          type: "string",
+                          format: "binary",
+                          description: "Image file for the Arts"
+                        },
+                      },
+                    },
+                  },
+                },
+                required: true,
+              },
+              responses: {
+                200: {
+                  description: "Arts updated successfully",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                404: {
+                  description: "Arts not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+            delete: {
+              tags: ["Arts"],
+              summary: "Delete Arts",
+              description: "Delete an Arts by ID",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Arts deleted successfully",
+                },
+                404: {
+                  description: "Arts not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+          "/api/v1/arts/{id}/owner": {
+            get: {
+              tags: ["Arts"],
+              summary: "Get Arts By Owner ID",
+              description: "Retrieve a single Arts by its ID",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Arts retrieved successfully",
+                },
+                404: {
+                  description: "Arts not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
 
     },
     components: {
