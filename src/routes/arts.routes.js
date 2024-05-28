@@ -1,5 +1,5 @@
 import express from "express";
-import Auth from "../middleware/Auth"
+import Auth from "../middleware/authMiddleware"
 import fileUpload from "../helper/multer"
 import { createArts, deleteArts, getAllArts, getArtsById, getArtsByOwner, updateArts } from "../controllers/arts.cotrollers";
 

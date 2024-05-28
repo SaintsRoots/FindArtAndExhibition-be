@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.models";
 
-const Auth = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   let token;
   try {
     if (
@@ -38,4 +38,4 @@ const Auth = async (req, res, next) => {
   }
 };
 
-export default Auth;
+export default authMiddleware;
