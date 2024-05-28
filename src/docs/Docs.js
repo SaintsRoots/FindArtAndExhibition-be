@@ -24,6 +24,11 @@ const options = {
         {
             name: "Arts",
             description: "Operations related to Arts entities",
+
+        },
+        {
+            name: "Cart",
+            description: "Operations related to Cart entities",
         }
     ],
     paths: {
@@ -338,190 +343,468 @@ const options = {
         // Arts
         "/api/v1/arts": {
             get: {
-              tags: ["Arts"],
-              summary: "Get All Arts",
-              description: "Retrieve all Arts from the database",
-              responses: {
-                200: {
-                  description: "Arts retrieved successfully",
+                tags: ["Arts"],
+                summary: "Get All Arts",
+                description: "Retrieve all Arts from the database",
+                responses: {
+                    200: {
+                        description: "Arts retrieved successfully",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
             post: {
-              tags: ["Arts"],
-              summary: "Create Arts",
-              description: "Create a new Arts in the database",
-              requestBody: {
-                content: {
-                  "multipart/form-data": {
-                    schema: {
-                      type: "object",
-                      properties: {
-                        name: { type: "string" },
-                        description: { type: "string" },
-                        category: { type: "string" },
-                        price: { type: "number" },
-                        available_arts: { type: "number" },
-                        image: {
-                          type: "string",
-                          format: "binary",
-                          description: "Image file for the Arts"
+                tags: ["Arts"],
+                summary: "Create Arts",
+                description: "Create a new Arts in the database",
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    name: { type: "string" },
+                                    description: { type: "string" },
+                                    category: { type: "string" },
+                                    price: { type: "number" },
+                                    available_arts: { type: "number" },
+                                    image: {
+                                        type: "string",
+                                        format: "binary",
+                                        description: "Image file for the Arts"
+                                    },
+                                },
+                            },
                         },
-                      },
                     },
-                  },
+                    required: true,
                 },
-                required: true,
-              },
-              responses: {
-                201: {
-                  description: "Arts created successfully",
+                responses: {
+                    201: {
+                        description: "Arts created successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                400: {
-                  description: "Bad Request",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
-          },
-          "/api/v1/arts/{id}": {
+        },
+        "/api/v1/arts/{id}": {
             get: {
-              tags: ["Arts"],
-              summary: "Get Arts By ID",
-              description: "Retrieve a single Arts by its ID",
-              parameters: [
-                {
-                  name: "id",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
+                tags: ["Arts"],
+                summary: "Get Arts By ID",
+                description: "Retrieve a single Arts by its ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Arts retrieved successfully",
+                    },
+                    404: {
+                        description: "Arts not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-              ],
-              responses: {
-                200: {
-                  description: "Arts retrieved successfully",
-                },
-                404: {
-                  description: "Arts not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
             put: {
-              tags: ["Arts"],
-              summary: "Update Arts",
-              description: "Update details of an existing Arts",
-              parameters: [
-                {
-                  name: "id",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
-                },
-              ],
-              requestBody: {
-                content: {
-                  "multipart/form-data": {
-                    schema: {
-                      type: "object",
-                      properties: {
-                        name: { type: "string" },
-                        description: { type: "string" },
-                        category: { type: "string" },
-                        price: { type: "number" },
-                        available_arts: { type: "number" },
-                        image: {
-                          type: "string",
-                          format: "binary",
-                          description: "Image file for the Arts"
+                tags: ["Arts"],
+                summary: "Update Arts",
+                description: "Update details of an existing Arts",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
                         },
-                      },
                     },
-                  },
+                ],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    name: { type: "string" },
+                                    description: { type: "string" },
+                                    category: { type: "string" },
+                                    price: { type: "number" },
+                                    available_arts: { type: "number" },
+                                    image: {
+                                        type: "string",
+                                        format: "binary",
+                                        description: "Image file for the Arts"
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    required: true,
                 },
-                required: true,
-              },
-              responses: {
-                200: {
-                  description: "Arts updated successfully",
+                responses: {
+                    200: {
+                        description: "Arts updated successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Arts not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                400: {
-                  description: "Bad Request",
-                },
-                404: {
-                  description: "Arts not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
             delete: {
-              tags: ["Arts"],
-              summary: "Delete Arts",
-              description: "Delete an Arts by ID",
-              parameters: [
-                {
-                  name: "id",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
+                tags: ["Arts"],
+                summary: "Delete Arts",
+                description: "Delete an Arts by ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Arts deleted successfully",
+                    },
+                    404: {
+                        description: "Arts not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-              ],
-              responses: {
-                200: {
-                  description: "Arts deleted successfully",
-                },
-                404: {
-                  description: "Arts not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
-          },
-          "/api/v1/arts/{id}/owner": {
+        },
+        "/api/v1/arts/{id}/owner": {
             get: {
-              tags: ["Arts"],
-              summary: "Get Arts By Owner ID",
-              description: "Retrieve a single Arts by its ID",
-              parameters: [
-                {
-                  name: "id",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
+                tags: ["Arts"],
+                summary: "Get Arts By Owner ID",
+                description: "Retrieve a single Arts by its ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Arts retrieved successfully",
+                    },
+                    404: {
+                        description: "Arts not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-              ],
-              responses: {
-                200: {
-                  description: "Arts retrieved successfully",
-                },
-                404: {
-                  description: "Arts not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
-          },
+        },
+        //   carts
+        "/api/v1/cart": {
+            get: {
+                tags: ["Cart"],
+                summary: "Get All Cart",
+                description: "Retrieve all Cart from the database",
+                responses: {
+                    200: {
+                        description: "Cart retrieved successfully",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+            post: {
+                tags: ["Arts"],
+                summary: "Create Arts",
+                description: "Create a new Arts in the database",
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    name: { type: "string" },
+                                    description: { type: "string" },
+                                    category: { type: "string" },
+                                    price: { type: "number" },
+                                    available_arts: { type: "number" },
+                                    image: {
+                                        type: "string",
+                                        format: "binary",
+                                        description: "Image file for the Arts"
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    required: true,
+                },
+                responses: {
+                    201: {
+                        description: "Arts created successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/cart/{id}": {
+            delete: {
+                tags: ["Cart"],
+                summary: "Delete Cart",
+                description: "Delete an Cart by ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Cart deleted successfully",
+                    },
+                    404: {
+                        description: "Cart not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/cart/{productId}/add": {
+            post: {
+                tags: ["Cart"],
+                summary: "Add Cart",
+                description: "Add item to cart using Product Id",
+                parameters: [
+                    {
+                        name: "productId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    quantity: { type: "number" },
+                                },
+                            },
+                        },
+                    },
+                    required: true,
+                },
+                responses: {
+                    200: {
+                        description: "Cart updated successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Cart not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/cart/{productId}/update": {
+            put: {
+                tags: ["Cart"],
+                summary: "Update Cart",
+                description: "Update details of an existing Cart",
+                parameters: [
+                    {
+                        name: "productId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    quantity: { type: "number" },
+                                },
+                            },
+                        },
+                    },
+                    required: true,
+                },
+                responses: {
+                    200: {
+                        description: "Cart updated successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Cart not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+
+        //   Order
+        "/api/v1/checkout": {
+            get: {
+                tags: ["Order"],
+                summary: "Get All Order",
+                description: "Retrieve all Order from the database",
+                responses: {
+                    200: {
+                        description: "Order retrieved successfully",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/checkout/owner": {
+            get: {
+                tags: ["Order"],
+                summary: "Get All Order",
+                description: "Retrieve all Order from the database",
+                responses: {
+                    200: {
+                        description: "Order retrieved successfully",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/checkout/{cartId}": {
+            post: {
+                tags: ["Order"],
+                summary: "Make Order",
+                description: "Add item to Order using cart Id",
+                parameters: [
+                    {
+                        name: "cartId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    shippingAddress: { type: "string" },
+                                    paymentMethod: { type: "string" },
+                                },
+                            },
+                        },
+                    },
+                    required: true,
+                },
+                responses: {
+                    200: {
+                        description: "Order Odered successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Order not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/checkout/{orderId}": {
+            get: {
+                tags: ["Order"],
+                summary: "Get Order by order id",
+                description: "Add item to Order using cart Id",
+                parameters: [
+                    {
+                        name: "cartId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Order Odered successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Order not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
 
     },
     components: {

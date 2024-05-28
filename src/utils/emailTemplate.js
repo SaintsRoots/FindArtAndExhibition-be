@@ -5,10 +5,16 @@ export const sendWelcomeEmailToAdmin = (email, name) => {
   const emailTemplate = {
     emailTo: email,
     subject: "Welcome Aboard - Find Arts Team!",
-    message: `<h1>Welcome, ${name}!</h1><br/>
-    Thank you for joining the Find Arts System And Exihibition team! We are thrilled to have you onboard as we continue to enhance our Find Arts System And Exihibition services. Look forward to exciting collaborations and impactful work.<br/>
-    Best regards,<br/>
-    The Find Arts System And Exihibition Team<br/>`,
+    message: `
+      <h1>Welcome, ${name}!</h1>
+      <p>
+        Thank you for joining the Find Arts System and Exhibition team! We are thrilled to have you onboard as we continue to enhance our services. We look forward to exciting collaborations and impactful work.
+      </p>
+      <p>
+        Best regards,<br/>
+        The Find Arts System and Exhibition Team
+      </p>
+    `,
   };
 
   sendMail(emailTemplate);
@@ -37,12 +43,17 @@ export const sendResetEmail = (email, name, link, resetCode) => {
 
 
 
-// sending Email Person Booked tickets
-export const sendEmailPersonBookedArts = (email, name, eventDetails) => {
+// Function to send an email to the person who made an order
+export const sendEmailPersonBookedArts = (email, name, orderDetails) => {
   const emailTemplate = {
     emailTo: email,
-    subject: "Booking Confirmation!",
-    message: `<p>Hi,${name}<br>Your booking for ${eventDetails.number_of_tickets} tickets to ${eventDetails.title} has been confirmed!</p><p>Total price: ${eventDetails.total_price} FRW</p>`,
+    subject: "Order Confirmation!",
+    message: `
+      <p>Hi ${name},</p>
+      <p>Your Arts order for ${orderDetails.totalItems} items has been successfully placed!</p>
+      <p>Total price: ${orderDetails.totalPrice} FRW</p>
+      <p>Thank you for your purchase. We will notify you once your items are shipped.</p>
+    `,
   };
 
   sendMail(emailTemplate);
@@ -54,7 +65,12 @@ export const sendEmailApproveArts = (email, name, updatedAt) => {
   const emailTemplate = {
     emailTo: email,
     subject: "Approval Confirmation!",
-    message: `<p>Hi,${name}<br>Your Request for being An Artist has been confirmed!</p><p>Date ${updatedAt} Now you Can customize your Dashboard</p>`,
+    message: `
+      <p>Hi ${name},</p>
+      <p>Congratulations! Your request to become an artist has been approved.</p>
+      <p>As of ${updatedAt}, you can now customize your dashboard and start showcasing your art.</p>
+      <p>Thank you for joining us. We look forward to seeing your amazing work!</p>
+    `,
   };
 
   sendMail(emailTemplate);
