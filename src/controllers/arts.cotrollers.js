@@ -4,7 +4,6 @@ import { validateArt } from "../validations/arts.validation";
 
 export const createArts = async (req, res) => {
     const { error, value } = validateArt(req.body);
-    console.log(value);
     if (error) {
         return res.status(400).json({
             message: error.details[0].message,
@@ -131,6 +130,8 @@ export const deleteArts = async (req, res) => {
         await artsService.deleteArts(id);
         return res.status(200).json({
             status: 200,
+            message: "Arts deleted successfully",
+            data: id,
         });
     } catch (error) {
         return res.status(500).json({
