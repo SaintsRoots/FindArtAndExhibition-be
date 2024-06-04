@@ -88,6 +88,44 @@ export const getArtsByOwner = async (req, res) => {
     }
 };
 
+// get art by category
+export const getArtsByCategory = async (req, res) => {
+    try {
+        const { category } = req.params;
+        const arts = await artsService.getArtsByCategory(category);
+        return res.status(200).json({
+            status: 200,
+            data: arts,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            message: "Failed to get art by category",
+            error: error.message,
+        });
+    }
+};
+
+// get art by title
+
+export const getArtsByTitle = async (req, res) => {
+    try {
+        const { name } = req.params;
+        const arts = await artsService.getArtsByName(name);
+        return res.status(200).json({
+            status: 200,
+            data: arts,
+        });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            status: 500,
+            message: "Failed to get art by title",
+            error: error.message,
+        });
+    }
+};
+
 // update art by id
 export const updateArts = async (req, res) => {
     const { error, value } = validateArt(req.body);
