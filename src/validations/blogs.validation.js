@@ -1,18 +1,28 @@
-import Joi from "joi";
+import Joi from "joi"
 
-//  Validation Posts Schema data
-
-const postValidationSchema = Joi.object({
-    title: Joi.string().required(),
-    description: Joi.string().required(),
+const createPostSchema = Joi.object({
+    title: Joi.string().optional(),
+    description: Joi.string().optional(),
     category: Joi.string().optional(),
-    image: Joi.string(),
+    image: Joi.string().optional(),
 });
 
+// Validation schema for updating a Post
+const updatePostSchema = Joi.object({
+  title: Joi.string().optional(),
+  description: Joi.string().optional(),
+  category: Joi.string().optional(),
+  image: Joi.string().optional(),
+}).or('title', 'description','category','image'); 
 
-// Exporting validated data
+// Function to validate Post creation
+export const validateCreatepost = (PostData) => {
+  return createPostSchema.validate(PostData);
+};
 
-export const validatePost = (postsData) => {
-    return postValidationSchema.validate(postsData);
-  };
-  
+// Function to validate Post update
+export const validateUpdatePost = (PostData) => {
+  return updatePostSchema.validate(PostData);
+};
+
+

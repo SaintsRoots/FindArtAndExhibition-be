@@ -1,18 +1,12 @@
 import Posts from "../models/blogs.model";
 import { uploadToCloud } from "../helper/cloud";
 
-export const createPost = async (postsData, file, user) => {
+// service to create a post
+export const createPost = async (postData, file, user) => {
+  const { title, description, category } = postData;
   let result;
   if (file) result = await uploadToCloud(file);
-  const { title, description, category } = postsData;
-
-  // existing post
-  const existingPost = await Posts.findOne({ title });
-  if (existingPost) {
-    throw new Error("Post already exists");
-  }
-
-  return await Arts.create({
+  return await Posts.create({
     title,
     description,
     category,
@@ -20,56 +14,52 @@ export const createPost = async (postsData, file, user) => {
     creator: user,
   });
 };
-// get All posts
 
-export const getAllPosts = async () => {
-  return await Posts.find();
+// service to retrieve all posts
+export const getPost = async () => {
+  return await Posts.find().populate({
+    path: "creator",
+    select: 'name email profile',
+  });
 };
 
-// get post by id
-
-export const getPostById = async (id) => {
-  const postData = await Posts.findById(id).populate(
-    "creator",
-    "name email profile"
-  );
-  if (!postData) {
-    throw new Error("Post not found");
-  }
-  return postData;
+// service to retrieve a single post by id
+export const getOnePost = async (postId) => {
+  return await Posts.findById(postId)
+  .populate({
+    path: "creator",
+    select: 'name email profile',
+  });
 };
-// get post by category
+// get by posts category
 
-export const getPostByCategory = async (category) => {
-  const postData = await Posts.find({ category });
-  if (!postData) {
-    throw new Error("Post category not found");
-  }
-  return postData;
-};
+export const getPostsByCategory = async (category) => {
+    const posts = await Posts.find({ category }).populate({
+        path: "creator",
+        select: 'name email profile',
+      });
+    if (!posts) {
+        throw new Error("Posts category not found");
+    }
+    return posts;
+}
 
-// get Post by title
+// get art by title
 export const getPostByTitle = async (title) => {
-  const postData = await Posts.findOne({ title }).populate(
-    "creator",
-    "name email profile"
-  );
-  if (!postData) {
-    throw new Error("Post title not found");
-  }
-  return postData;
-};
-
-// update post
-
-export const updatePost = async (id, postsData, file, user) => {
+    const post = await Posts.findOne({ title }).populate({
+        path: "creator",
+        select: 'name email profile',
+      });
+    if (!post) {
+        throw new Error("Post title not found");
+    }
+    return post;
+}
+// service to updated post info by id
+export const updatePost = async (id, postData, file, user) => {
+  const { title, description, category } = postData;
   let result;
   if (file) result = await uploadToCloud(file);
-  const postToUpdate = await Posts.findById(id);
-  if (!postToUpdate) {
-    throw new Error("Post not found");
-  }
-  const { title, description, category } = postsData;
   return await Posts.findByIdAndUpdate(id, {
     title,
     description,
@@ -79,12 +69,7 @@ export const updatePost = async (id, postsData, file, user) => {
   });
 };
 
-// delete post
-
+// service delete a Posts
 export const deletePost = async (id) => {
-  const postToDelete = await Posts.findById(id);
-  if (!postToDelete) {
-    throw new Error("Post not found");
-  }
-  return await Posts.findByIdAndDelete(id);
+  await Posts.findByIdAndDelete(id);
 };

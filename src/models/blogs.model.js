@@ -1,29 +1,31 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema({
-    creator: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'users',
-        required: true,
-    },
+const postSchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
+      unique: true,
     },
     description: {
+      type: String,
+      required: true,
+    },
+    category:{
         type: String,
-        required: true,
     },
     image: {
-        type: String,
-        required: true,
+      type: String,
     },
-    category: {
-        type: String,
+    creator:{
+      type: mongoose.Schema.ObjectId, ref:"users",
     },
-    createdAt: { type: Date, default: Date.now }
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Posts = mongoose.models.posts || mongoose.model("posts", postSchema);
+const Posts = mongoose.models.posts || mongoose.model('posts', postSchema);
 
 export default Posts;
