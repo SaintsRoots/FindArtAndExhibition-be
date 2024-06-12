@@ -9,7 +9,7 @@ const createMessageSchema = Joi.object({
 
 
 // Function to validate message creation
-export const validateCreatepost = (MessageData) => {
+export const validateCreateMessage = (MessageData) => {
   return createMessageSchema.validate(MessageData);
 };
 
