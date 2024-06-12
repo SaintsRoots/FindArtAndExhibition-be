@@ -38,6 +38,10 @@ const options = {
             name: "Messages",
             description: "Operations related to Messages' entities",
         },
+        {
+            name: "Testimonials",
+            description: "Operations related to Testimonials' entities",
+        },
     ],
     paths: {
         // users 
@@ -1151,6 +1155,114 @@ const options = {
                 },
                 404: {
                   description: "Message not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+
+          // Testimonials operations
+        "/api/v1/testimonials": {
+            get: {
+              tags: ["Testimonials"],
+              summary: "Get All Testimonials",
+              description: "View all Testimonials",
+              responses: {
+                200: {
+                  description: "All testimonials retrieved",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+            post: {
+              tags: ["Testimonials"],
+              summary: "Send testimonial",
+              description: "Leave a testimonial",
+              requestBody: {
+                content: {
+                  "multipart/form-data": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        message: {
+                            type: "string",
+                          },
+                      },
+                    },
+                  },
+                },
+                required: true,
+              },
+              responses: {
+                201: {
+                  description: "Testimonial sent",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+          
+          "/api/v1/testimonials/{TestimonialId}": {
+            get: {
+              tags: ["Testimonials"],
+              summary: "Read Testimonial By ID",
+              description: "Get a Testimonial by ID",
+              parameters: [
+                {
+                  name: "TestimonialId",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Testimonial retrieved",
+                },
+                404: {
+                  description: "Testimonial not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+        },
+        "/api/v1/testimonials/{id}": {
+            delete: {
+              tags: ["Testimonials"],
+              summary: "Delete Testimonial",
+              description: "Delete a Testimonial by ID",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Testimonial deleted",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                404: {
+                  description: "Testimonial not found",
                 },
                 500: {
                   description: "Internal Server Error",
