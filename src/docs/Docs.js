@@ -34,9 +34,13 @@ const options = {
             name: "Posts",
             description: "Operations related to Posts' entities",
         },
+        {
+            name: "Messages",
+            description: "Operations related to Messages' entities",
+        },
     ],
     paths: {
-        // users
+        // users 
         "/api/v1/users": {
             get: {
                 tags: ["Users"],
@@ -1036,8 +1040,125 @@ const options = {
                     },
                 },
             },
-        }
+        },
 
+        // Messages operations
+        "/api/v1/messages": {
+            get: {
+              tags: ["Messages"],
+              summary: "Get All Messages",
+              description: "View all Messages",
+              responses: {
+                200: {
+                  description: "All messages retrieved",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+            post: {
+              tags: ["Messages"],
+              summary: "Send message",
+              description: "Leave a message",
+              requestBody: {
+                content: {
+                  "multipart/form-data": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        names: {
+                          type: "string",
+                        },
+                        email: {
+                          type: "string",
+                        },
+                        subject: {
+                          type: "string",
+                        },
+                        message: {
+                            type: "string",
+                          },
+                      },
+                    },
+                  },
+                },
+                required: true,
+              },
+              responses: {
+                201: {
+                  description: "Message sent",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+          
+          "/api/v1/messages/{messageId}": {
+            get: {
+              tags: ["Messages"],
+              summary: "Read Message By ID",
+              description: "Get a Message by ID",
+              parameters: [
+                {
+                  name: "messageId",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Message retrieved",
+                },
+                404: {
+                  description: "Message not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+        },
+        "/api/v1/messages/{id}": {
+            delete: {
+              tags: ["Messages"],
+              summary: "Delete Message",
+              description: "Delete a message by ID",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Message deleted",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                404: {
+                  description: "Message not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+        
     },
     components: {
         securitySchemes: {
