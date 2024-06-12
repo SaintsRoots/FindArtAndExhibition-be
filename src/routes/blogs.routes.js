@@ -1,25 +1,27 @@
 import express from "express";
-import Auth from "../middleware/authMiddleware";
 import fileUpload from "../helper/multer";
+import authMiddleware from "../middleware/authMiddleware";
 import { 
     createPost,
-    getAllPosts,
-    getPostById,
-    getPostByCategory,
-    getPostByTitle,
+    getPosts,
+    getOnePost,
+    getPostsByCategory,
     updatePost,
-    deletePost
+    deletePost,
+    getPostByTitle
 
- } from "../services/blogs.services";
+ } from "../controllers/blogs.controllers";
 
 const postRoutes = express.Router();
 
-postRoutes.post("/", fileUpload.single("image"), Auth, createPost);
-postRoutes.get("/", getAllPosts);
-postRoutes.get("/:id", getPostById);
-postRoutes.get("/category/:category", getPostByCategory);
+
+postRoutes.get("/", getPosts);
+postRoutes.get("/:postId", getOnePost);
+postRoutes.post("/", fileUpload.single("image"), authMiddleware,createPost);
+postRoutes.put("/:id", fileUpload.single("image"), authMiddleware, updatePost);
+postRoutes.delete("/:id", authMiddleware, deletePost);
+postRoutes.get("/category/:category", getPostsByCategory);
 postRoutes.get("/title/:title", getPostByTitle);
-postRoutes.delete("/:id", deletePost);
-postRoutes.put("/:id", fileUpload.single("image"), Auth, updatePost);
+
 
 export default postRoutes;

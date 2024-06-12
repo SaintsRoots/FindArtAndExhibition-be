@@ -29,7 +29,11 @@ const options = {
         {
             name: "Cart",
             description: "Operations related to Cart entities",
-        }
+        },
+        {
+            name: "Posts",
+            description: "Operations related to Posts' entities",
+        },
     ],
     paths: {
         // users
@@ -805,6 +809,234 @@ const options = {
                 },
             },
         },
+        // Posts operations
+        "/api/v1/posts": {
+            get: {
+              tags: ["Posts"],
+              summary: "Get All Posts",
+              description: "Get all Posts",
+              responses: {
+                200: {
+                  description: "All Posts are retrieved successfully",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+            post: {
+              tags: ["Posts"],
+              summary: "Create Post",
+              description: "Create a new Post",
+              requestBody: {
+                content: {
+                  "multipart/form-data": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        title: {
+                          type: "string",
+                        },
+                        description: {
+                          type: "string",
+                        },
+                        category: {
+                            type: "string",
+                          },
+                        image: {
+                          type: "string",
+                          format: "binary",
+                        },
+                      },
+                    },
+                  },
+                },
+                required: true,
+              },
+              responses: {
+                201: {
+                  description: "New Post created successfully",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+          "/api/v1/posts/{postId}": {
+            get: {
+              tags: ["Posts"],
+              summary: "Read Post By ID",
+              description: "Get a Post by ID",
+              parameters: [
+                {
+                  name: "postId",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Post retrieved successfully",
+                },
+                404: {
+                  description: "Post not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+        },
+        "/api/v1/posts/{id}": {
+            put: {
+              tags: ["Posts"],
+              summary: "Update Post",
+              description: "Update an existing Post",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              requestBody: {
+                content: {
+                  "multipart/form-data": {
+                    schema: {
+                      type: "object",
+                      properties: {
+                        title: {
+                          type: "string",
+                        },
+                        description: {
+                          type: "string",
+                        },
+                        category: {
+                            type: "string",
+                          },
+                        image: {
+                          type: "string",
+                          format: "binary",
+                        },
+                      },
+                    },
+                  },
+                },
+                required: true,
+              },
+              responses: {
+                200: {
+                  description: "Post updated successfully",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                404: {
+                  description: "Post not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+            delete: {
+              tags: ["Posts"],
+              summary: "Delete Post",
+              description: "Delete a post by ID",
+              parameters: [
+                {
+                  name: "id",
+                  in: "path",
+                  required: true,
+                  schema: {
+                    type: "string",
+                  },
+                },
+              ],
+              responses: {
+                200: {
+                  description: "Post deleted successfully",
+                },
+                400: {
+                  description: "Bad Request",
+                },
+                404: {
+                  description: "Post not found",
+                },
+                500: {
+                  description: "Internal Server Error",
+                },
+              },
+            },
+          },
+        
+        "/api/v1/posts/category/{category}": {
+            get: {
+                tags: ["Posts"],
+                summary: "Get Post By Category",
+                description: "Retrieve all posts of the same category",
+                parameters: [
+                    {
+                        name: "category",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Posts retrieved",
+                    },
+                    404: {
+                        description: "Posts not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+
+        "/api/v1/posts/title/{title}": {
+            get: {
+                tags: ["Posts"],
+                summary: "Get Post By title",
+                description: "Retrieve a post by title",
+                parameters: [
+                    {
+                        name: "title",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Posts retrieved",
+                    },
+                    404: {
+                        description: "Posts not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        }
 
     },
     components: {
