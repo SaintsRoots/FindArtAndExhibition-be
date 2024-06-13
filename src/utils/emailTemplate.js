@@ -61,16 +61,31 @@ export const sendEmailPersonBookedArts = (email, name, orderDetails) => {
 
 // Approve Message
 
-export const sendEmailApproveArts = (email, name, updatedAt) => {
+export const sendEmailApproveArts = (email, name, role, updatedAt) => {
   const emailTemplate = {
     emailTo: email,
     subject: "Approval Confirmation!",
     message: `
       <p>Hi ${name},</p>
-      <p>Congratulations! Your request to become an artist has been approved.</p>
+      <p>Congratulations! Your request to become an ${role} has been approved.</p>
       <p>As of ${updatedAt}, you can now customize your dashboard and start showcasing your art.</p>
       <p>Thank you for joining us. We look forward to seeing your amazing work!</p>
     `,
+  };
+
+  sendMail(emailTemplate);
+};
+
+export const sendEmailAdminApproveArts = (email, name, updatedAt) => {
+  const emailTemplate = {
+    emailTo: email,
+    subject: "Approval Confirmation!",
+    message: `
+    <p>Hi ${name},</p>
+    <p>Congratulations! Your request to become an Admin has been approved.</p>
+    <p>As of ${updatedAt}, you now have administrative privileges.</p>
+    <p>Thank you for your dedication and willingness to help manage our platform. We look forward to your valuable contributions!</p>
+  `,
   };
 
   sendMail(emailTemplate);
