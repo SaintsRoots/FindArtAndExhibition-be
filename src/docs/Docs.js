@@ -138,6 +138,68 @@ const options = {
                 },
             },
         },
+        "/api/v1/users/{id}/artist": {
+            post: {
+                tags: ["Users"],
+                summary: "Approve User",
+                description: "Approve a Existing user status user by ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    201: {
+                        description: "User Approved successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "User not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/users/{id}/admin": {
+            post: {
+                tags: ["Users"],
+                summary: "Approve Admin",
+                description: "Approve a Existing user status user by ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    201: {
+                        description: "User Approved successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "User not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
         "/api/v1/users/{id}": {
             get: {
                 tags: ["Users"],
@@ -207,35 +269,6 @@ const options = {
                 responses: {
                     200: {
                         description: "User updated successfully",
-                    },
-                    400: {
-                        description: "Bad Request",
-                    },
-                    404: {
-                        description: "User not found",
-                    },
-                    500: {
-                        description: "Internal Server Error",
-                    },
-                },
-            },
-            post: {
-                tags: ["Users"],
-                summary: "Approve User",
-                description: "Approve a Existing user status user by ID",
-                parameters: [
-                    {
-                        name: "id",
-                        in: "path",
-                        required: true,
-                        schema: {
-                            type: "string",
-                        },
-                    },
-                ],
-                responses: {
-                    201: {
-                        description: "User Approved successfully",
                     },
                     400: {
                         description: "Bad Request",
@@ -820,174 +853,174 @@ const options = {
         // Posts operations
         "/api/v1/posts": {
             get: {
-              tags: ["Posts"],
-              summary: "Get All Posts",
-              description: "Get all Posts",
-              responses: {
-                200: {
-                  description: "All Posts are retrieved successfully",
+                tags: ["Posts"],
+                summary: "Get All Posts",
+                description: "Get all Posts",
+                responses: {
+                    200: {
+                        description: "All Posts are retrieved successfully",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
             post: {
-              tags: ["Posts"],
-              summary: "Create Post",
-              description: "Create a new Post",
-              requestBody: {
-                content: {
-                  "multipart/form-data": {
-                    schema: {
-                      type: "object",
-                      properties: {
-                        title: {
-                          type: "string",
+                tags: ["Posts"],
+                summary: "Create Post",
+                description: "Create a new Post",
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    title: {
+                                        type: "string",
+                                    },
+                                    description: {
+                                        type: "string",
+                                    },
+                                    category: {
+                                        type: "string",
+                                    },
+                                    image: {
+                                        type: "string",
+                                        format: "binary",
+                                    },
+                                },
+                            },
                         },
-                        description: {
-                          type: "string",
-                        },
-                        category: {
-                            type: "string",
-                          },
-                        image: {
-                          type: "string",
-                          format: "binary",
-                        },
-                      },
                     },
-                  },
+                    required: true,
                 },
-                required: true,
-              },
-              responses: {
-                201: {
-                  description: "New Post created successfully",
+                responses: {
+                    201: {
+                        description: "New Post created successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                400: {
-                  description: "Bad Request",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
-          },
-          "/api/v1/posts/{postId}": {
+        },
+        "/api/v1/posts/{postId}": {
             get: {
-              tags: ["Posts"],
-              summary: "Read Post By ID",
-              description: "Get a Post by ID",
-              parameters: [
-                {
-                  name: "postId",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
+                tags: ["Posts"],
+                summary: "Read Post By ID",
+                description: "Get a Post by ID",
+                parameters: [
+                    {
+                        name: "postId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Post retrieved successfully",
+                    },
+                    404: {
+                        description: "Post not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-              ],
-              responses: {
-                200: {
-                  description: "Post retrieved successfully",
-                },
-                404: {
-                  description: "Post not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
         },
         "/api/v1/posts/{id}": {
             put: {
-              tags: ["Posts"],
-              summary: "Update Post",
-              description: "Update an existing Post",
-              parameters: [
-                {
-                  name: "id",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
-                },
-              ],
-              requestBody: {
-                content: {
-                  "multipart/form-data": {
-                    schema: {
-                      type: "object",
-                      properties: {
-                        title: {
-                          type: "string",
-                        },
-                        description: {
-                          type: "string",
-                        },
-                        category: {
+                tags: ["Posts"],
+                summary: "Update Post",
+                description: "Update an existing Post",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
                             type: "string",
-                          },
-                        image: {
-                          type: "string",
-                          format: "binary",
                         },
-                      },
                     },
-                  },
+                ],
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    title: {
+                                        type: "string",
+                                    },
+                                    description: {
+                                        type: "string",
+                                    },
+                                    category: {
+                                        type: "string",
+                                    },
+                                    image: {
+                                        type: "string",
+                                        format: "binary",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    required: true,
                 },
-                required: true,
-              },
-              responses: {
-                200: {
-                  description: "Post updated successfully",
+                responses: {
+                    200: {
+                        description: "Post updated successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Post not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                400: {
-                  description: "Bad Request",
-                },
-                404: {
-                  description: "Post not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
             delete: {
-              tags: ["Posts"],
-              summary: "Delete Post",
-              description: "Delete a post by ID",
-              parameters: [
-                {
-                  name: "id",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
+                tags: ["Posts"],
+                summary: "Delete Post",
+                description: "Delete a post by ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Post deleted successfully",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Post not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-              ],
-              responses: {
-                200: {
-                  description: "Post deleted successfully",
-                },
-                400: {
-                  description: "Bad Request",
-                },
-                404: {
-                  description: "Post not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
-          },
-        
+        },
+
         "/api/v1/posts/category/{category}": {
             get: {
                 tags: ["Posts"],
@@ -1049,117 +1082,117 @@ const options = {
         // Messages operations
         "/api/v1/messages": {
             get: {
-              tags: ["Messages"],
-              summary: "Get All Messages",
-              description: "View all Messages",
-              responses: {
-                200: {
-                  description: "All messages retrieved",
+                tags: ["Messages"],
+                summary: "Get All Messages",
+                description: "View all Messages",
+                responses: {
+                    200: {
+                        description: "All messages retrieved",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
             post: {
-              tags: ["Messages"],
-              summary: "Send message",
-              description: "Leave a message",
-              requestBody: {
-                content: {
-                  "multipart/form-data": {
-                    schema: {
-                      type: "object",
-                      properties: {
-                        names: {
-                          type: "string",
+                tags: ["Messages"],
+                summary: "Send message",
+                description: "Leave a message",
+                requestBody: {
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    names: {
+                                        type: "string",
+                                    },
+                                    email: {
+                                        type: "string",
+                                    },
+                                    subject: {
+                                        type: "string",
+                                    },
+                                    message: {
+                                        type: "string",
+                                    },
+                                },
+                            },
                         },
-                        email: {
-                          type: "string",
-                        },
-                        subject: {
-                          type: "string",
-                        },
-                        message: {
-                            type: "string",
-                          },
-                      },
                     },
-                  },
+                    required: true,
                 },
-                required: true,
-              },
-              responses: {
-                201: {
-                  description: "Message sent",
+                responses: {
+                    201: {
+                        description: "Message sent",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-                400: {
-                  description: "Bad Request",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
-          },
-          
-          "/api/v1/messages/{messageId}": {
+        },
+
+        "/api/v1/messages/{messageId}": {
             get: {
-              tags: ["Messages"],
-              summary: "Read Message By ID",
-              description: "Get a Message by ID",
-              parameters: [
-                {
-                  name: "messageId",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
+                tags: ["Messages"],
+                summary: "Read Message By ID",
+                description: "Get a Message by ID",
+                parameters: [
+                    {
+                        name: "messageId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Message retrieved",
+                    },
+                    404: {
+                        description: "Message not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-              ],
-              responses: {
-                200: {
-                  description: "Message retrieved",
-                },
-                404: {
-                  description: "Message not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
         },
         "/api/v1/messages/{id}": {
             delete: {
-              tags: ["Messages"],
-              summary: "Delete Message",
-              description: "Delete a message by ID",
-              parameters: [
-                {
-                  name: "id",
-                  in: "path",
-                  required: true,
-                  schema: {
-                    type: "string",
-                  },
+                tags: ["Messages"],
+                summary: "Delete Message",
+                description: "Delete a message by ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Message deleted",
+                    },
+                    400: {
+                        description: "Bad Request",
+                    },
+                    404: {
+                        description: "Message not found",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
                 },
-              ],
-              responses: {
-                200: {
-                  description: "Message deleted",
-                },
-                400: {
-                  description: "Bad Request",
-                },
-                404: {
-                  description: "Message not found",
-                },
-                500: {
-                  description: "Internal Server Error",
-                },
-              },
             },
           },
 
@@ -1270,7 +1303,6 @@ const options = {
               },
             },
           },
-        
     },
     components: {
         securitySchemes: {
