@@ -1,5 +1,4 @@
 import Contact from "../models/contacts.model";
-import { uploadToCloud } from "../helper/cloud";
 
 // service to create a message
 export const createMessage = async (messageData) => {

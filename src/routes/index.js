@@ -6,6 +6,8 @@ import cartRouter from "./cart.routes";
 import orderRouter from "./order.routes";
 import postRoutes from "./blogs.routes";
 import messageRoutes from "./contacts.routes";
+import testimonialRoutes from "./testimonials.routes";
+
 const router = express.Router();
 
 // Route
@@ -17,6 +19,7 @@ router.use("/cart", cartRouter);
 router.use("/checkout", orderRouter);
 router.use("/posts", postRoutes);
 router.use("/messages", messageRoutes);
+router.use("/testimonials", testimonialRoutes);
 
 
 export default router;
