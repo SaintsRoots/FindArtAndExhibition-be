@@ -16,6 +16,11 @@ export const findUserById = async (id) => {
 
 // Service to create a new user
 export const createUser = async (userData, file) => {
+
+  const existing = await User.findOne({ email: userData.email });
+  if (existing) {
+    throw new Error("Email already exists");
+  }
   let result;
   if (file) result = await uploadToCloud(file);
 
@@ -52,7 +57,11 @@ export const approveStatusChange = async (id) => {
   if (!user) {
     throw new Error('User not found');
   }
+
   let newStatus;
+  let newRole = 'Artist';
+  
+
   if (user.status === 'pending') {
     newStatus = 'approved';
   } else if (user.status === 'approved') {
@@ -64,10 +73,41 @@ export const approveStatusChange = async (id) => {
   }
 
   user.status = newStatus;
+  user.role = newRole;
   await user.save();
 
   return user;
 };
+// Approve status change
+export const approveAdminStatusChange = async (id) => {
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  let newStatus;
+  let newRole = 'Admin';
+  let isAdmin = true;
+
+  if (user.status === 'pending') {
+    newStatus = 'approved';
+  } else if (user.status === 'approved') {
+    newStatus = 'canceled';
+  } else if (user.status === 'canceled') {
+    newStatus = 'pending';
+  } else {
+    throw new Error('Invalid status');
+  }
+
+  user.status = newStatus;
+  user.role = newRole;
+  user.isAdmin = isAdmin;
+  await user.save();
+
+  return user;
+};
+
 
 
 // Service to delete a user by id

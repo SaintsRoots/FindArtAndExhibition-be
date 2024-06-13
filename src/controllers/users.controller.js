@@ -1,6 +1,6 @@
 // Importing services
 import * as UserService from "../services/users.services"
-import { sendEmailApproveArts, sendWelcomeEmailToAdmin } from "../utils/emailTemplate";
+import { sendEmailAdminApproveArts, sendEmailApproveArts, sendWelcomeEmailToAdmin } from "../utils/emailTemplate";
 import generateToken from "../utils/generateToken";
 import { validateCreateUser, validateUpdateUser, validateForgotPassword, validateResetPassword, ValidateChangePassword } from "../validations/users.validation";
 // getAllUsers controller
@@ -95,8 +95,26 @@ export const approveStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await UserService.approveStatusChange(id);
-    console.log(user.updatedAt)
-    sendEmailApproveArts(user.email, user.name, user.updatedAt);
+    sendEmailApproveArts(user.email, user.name, user.role, user.updatedAt);
+    return res.status(200).json({
+      status: "200",
+      message: `Account status changed to ${user.status}`,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "500",
+      message: "Failed to change account status",
+      error: error.message,
+    });
+  }
+};
+// Approve status change
+export const approveAdminStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UserService.approveAdminStatusChange(id);
+    sendEmailAdminApproveArts(user.email, user.name,  user.updatedAt);
     return res.status(200).json({
       status: "200",
       message: `Account status changed to ${user.status}`,

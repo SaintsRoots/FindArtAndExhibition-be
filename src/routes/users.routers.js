@@ -1,7 +1,7 @@
 import express from "express";
 import fileUpload from "../helper/multer";
 
-import { createUser, deleteUser, getAllUsers, getOneUser, login, updateUser, forgotPassword, resetPassword, approveStatus } from "../controllers/users.controller";
+import { createUser, deleteUser, getAllUsers, getOneUser, login, updateUser, forgotPassword, resetPassword, approveStatus, approveAdminStatus } from "../controllers/users.controller";
 const userRoute = express.Router();
 userRoute.get("/", getAllUsers);
 userRoute.get("/:id", getOneUser);
@@ -9,7 +9,8 @@ userRoute.post("/", fileUpload.single("profile"), createUser);
 userRoute.put("/:id", fileUpload.single("profile"), updateUser);
 userRoute.delete("/:id", deleteUser);
 userRoute.post("/auth", fileUpload.single("files"), login);
-userRoute.post("/:id", fileUpload.single("files"), approveStatus);
+userRoute.post("/:id/artist", fileUpload.single("files"), approveStatus);
+userRoute.post("/:id/admin", fileUpload.single("files"), approveAdminStatus);
 userRoute.post("/forgot-password", fileUpload.single("files"), forgotPassword);
 userRoute.post("/reset-password", fileUpload.single("files"), resetPassword);
 
