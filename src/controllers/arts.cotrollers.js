@@ -87,6 +87,25 @@ export const getArtsByOwner = async (req, res) => {
         });
     }
 };
+export const getArtsByLoggedUser = async (req, res) => {
+    try {
+        const ownerId = req.User._id;
+        const arts = await artsService.getArtsByLoggedUser(ownerId);
+
+        return res.status(200).json({
+            status: 200,
+            message: `Successfully retrieved ${arts.length} arts.`,
+            data: arts,
+        });
+    } catch (error) {
+        console.error(`Failed to get arts by owner: ${error.message}`);
+        return res.status(500).json({
+            status: 500,
+            message: "Failed to get arts by owner.",
+            error: error.message,
+        });
+    }
+};
 
 // get art by category
 export const getArtsByCategory = async (req, res) => {
