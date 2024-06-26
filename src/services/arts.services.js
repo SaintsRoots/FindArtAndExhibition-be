@@ -65,6 +65,15 @@ export const getArtsByOwner = async (ownerId) => {
     return await Arts.find({ owner: ownerId });
 };
 
+// get art by loged owner
+export const getArtsByLoggedUser = async (ownerId) => {
+    const owners = await Arts.find({ owner: ownerId });
+    if (!owners) {
+        throw new Error("Arts Id not found");
+    }
+    return owners
+};
+
 // update arts
 
 export const updateArts = async (id, artsData, file, user) => {
