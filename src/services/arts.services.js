@@ -84,7 +84,7 @@ export const updateArts = async (id, artsData, file, user) => {
         throw new Error("Arts Id not found");
     }
     const { name, description, category, available_arts, price } = artsData
-    return await Arts.findByIdAndUpdate(id, { name, owner, description, category, image: result?.secure_url, available_arts, price, owner: user });
+    return await Arts.findByIdAndUpdate(id, { name, description, category, image: result?.secure_url, available_arts, price, owner: user });
 }
 
 // delete arts
