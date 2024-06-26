@@ -148,7 +148,6 @@ export const getArtsByTitle = async (req, res) => {
 // update art by id
 export const updateArts = async (req, res) => {
     const { error, value } = validateArt(req.body);
-    console.log(value);
     if (error) {
         return res.status(400).json({
             message: error.details[0].message,
