@@ -1,7 +1,9 @@
 import Cart from '../models/cart.model';
 import Order from '../models/order.model';
+import Arts from '../models/arts.model';
 import OrderPayment from '../models/orderPayment.model';
 import mongoose from 'mongoose';
+import User from '../models/user.models';
 
 export const checkout = async (cartId, shippingAddress, paymentMethod) => {
     const session = await mongoose.startSession();
@@ -25,7 +27,7 @@ export const checkout = async (cartId, shippingAddress, paymentMethod) => {
         product.available_arts -= item.quantity;
         await product.save({ session });
     }
- 
+
     const order = new Order({
         user: cart.user,
         items: cart.items,
@@ -73,3 +75,49 @@ export const getOrder = async (orderId) => {
     }
     return order;
 }
+
+export const getOrdersByOwner = async (ownerId) => {
+    // Find all products owned by the owner
+    const products = await Arts.find({ owner: ownerId });
+
+    // Get all product IDs owned by the owner
+    const productIds = products.map(product => product._id);
+
+    // Find all orders that contain these products
+    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product');
+    if (!orders) {
+        throw new Error('Orders not found');
+    }
+    return orders;
+};
+
+export const getUsersByOwner = async (ownerId) => {
+    try {
+        // Find all products owned by the owner
+        const products = await Arts.find({ owner: ownerId });
+
+        // Get all product IDs owned by the owner
+        const productIds = products.map(product => product._id);
+
+        // Find all orders that contain these products
+        const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product');
+
+        if (!orders || orders.length === 0) {
+            throw new Error('Orders not found');
+        }
+
+        // Extract unique user IDs from orders
+        const userIds = [...new Set(orders.map(order => order.user.toString()))];
+
+        // Populate user details
+        const users = await User.find({ _id: { $in: userIds } });
+
+        // Extract ordered products details
+        const orderedProducts = orders.flatMap(order => order.items.map(item => item.product));
+
+        return { users, orderedProducts };
+    } catch (error) {
+        console.error('Error retrieving users and products:', error);
+        throw error;
+    }
+};
