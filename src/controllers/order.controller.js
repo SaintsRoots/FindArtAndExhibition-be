@@ -73,3 +73,29 @@ export const getOrders = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
+export const getOrdersByOwner = async (req, res) => {
+    const ownerId = req.User._id;
+    try {
+        const order = await orderService.getOrdersByOwner(ownerId);
+        return res.status(200).json({
+            message: "Orders retrieved successfully",
+            data: order
+        });
+    } catch (error) {
+        console.error('Get orders error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+export const getAllCustomer = async (req, res) => {
+    const ownerId = req.User._id;
+    try {
+        const order = await orderService.getUsersByOwner(ownerId);
+        return res.status(200).json({
+            message: "All Customers retrieved successfully",
+            data: order
+        });
+    } catch (error) {
+        console.error('Get orders error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};

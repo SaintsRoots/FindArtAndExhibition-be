@@ -790,6 +790,36 @@ const options = {
                 },
             },
         },
+        "/api/v1/checkout/customer": {
+            get: {
+                tags: ["Order"],
+                summary: "Get All Order",
+                description: "Retrieve all Order from the database",
+                responses: {
+                    200: {
+                        description: "Order retrieved successfully",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
+        "/api/v1/checkout/artsOwner": {
+            get: {
+                tags: ["Order"],
+                summary: "Get All Order by Products Ownner",
+                description: "Retrieve all Order from the database",
+                responses: {
+                    200: {
+                        description: "Order retrieved successfully",
+                    },
+                    500: {
+                        description: "Internal Server Error",
+                    },
+                },
+            },
+        },
         "/api/v1/checkout/{cartId}": {
             post: {
                 tags: ["Order"],
