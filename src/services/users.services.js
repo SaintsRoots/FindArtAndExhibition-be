@@ -27,11 +27,15 @@ export const createUser = async (userData, file) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPass = await bcrypt.hash(userData.password, salt);
 
+  const status = userData.role === "Artist" ? "approved" : "pending";
+
   return await User.create({
     name: userData.name,
     email: userData.email,
     password: hashedPass,
     img: result?.secure_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+    status: status,
+    role: userData.role || "User",
   });
 };
 
