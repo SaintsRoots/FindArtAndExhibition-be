@@ -75,6 +75,9 @@ const options = {
                                     email: {
                                         type: "string",
                                     },
+                                    role: {
+                                        type: "string",
+                                    },
                                     profile: {
                                         type: "string",
                                         format: "binary",

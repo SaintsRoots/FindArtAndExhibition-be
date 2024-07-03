@@ -6,6 +6,7 @@ const createUserSchema = Joi.object({
     password: Joi.string().required().min(3).max(50),
     img: Joi.string().optional(),
     role: Joi.string().optional(),
+    status: Joi.string().optional(),
 });
 
 // Validation schema for updating a user
@@ -15,6 +16,7 @@ const updateUserSchema = Joi.object({
     password: Joi.string().min(3).max(50).optional(),
     img: Joi.string().optional(),
     role: Joi.string().optional(),
+    status: Joi.string().optional(),
 }).or('name', 'email', 'password', 'img');
 
 // Validation schema for user login
