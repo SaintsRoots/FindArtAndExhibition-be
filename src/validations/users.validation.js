@@ -17,7 +17,12 @@ const updateUserSchema = Joi.object({
     img: Joi.string().optional(),
     role: Joi.string().optional(),
     status: Joi.string().optional(),
-}).or('name', 'email', 'password', 'img');
+    phone: Joi.string().optional(),
+    province: Joi.string().optional(),
+    district: Joi.string().optional(),
+    sector: Joi.string().optional(),
+    street: Joi.string().optional(),
+});
 
 // Validation schema for user login
 const loginUserSchema = Joi.object({

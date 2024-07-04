@@ -50,6 +50,11 @@ export const updateUserById = async (id, userData, file) => {
   return await User.findByIdAndUpdate(id, {
     name: userData.name,
     email: userData.email,
+    phone: userData.phone,
+    province: userData.province,
+    district: userData.district,
+    sector: userData.sector,
+    street: userData.street,
     password: hashedPass,
     img: result?.secure_url,
   });
