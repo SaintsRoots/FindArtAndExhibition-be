@@ -60,16 +60,27 @@ export const checkout = async (cartId, shippingAddress, paymentMethod) => {
 // get all order
 
 export const getOrdersUserID = async (userId) => {
-    const orders = await Order.find({ user: userId }).populate('items.product').populate(`user`);
+    const orders = await Order.find({ user: userId }).populate('items.product') .populate({ path: 'user',select: 'name email img' });
+
     return orders;
 }
 export const allOrder = async () => {
-    const orders = await Order.find().populate('items.product').populate(`user`);
+    const orders = await Order.find()
+        .populate({
+            path: 'items.product',
+            populate: {
+                path: 'owner',
+                select: 'name'
+            }
+        })
+        .populate({ path: 'user',select: 'name email img' });
     return orders;
-}
+};
+
 
 export const getOrder = async (orderId) => {
-    const order = await Order.findById(orderId).populate('items.product').populate(`user`);
+    const order = await Order.findById(orderId).populate('items.product') .populate({ path: 'user',select: 'name email img' });
+
     if (!order) {
         throw new Error('Order not found');
     }
@@ -84,7 +95,8 @@ export const getOrdersByOwner = async (ownerId) => {
     const productIds = products.map(product => product._id);
 
     // Find all orders that contain these products
-    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product').populate(`user`);
+    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product') .populate({ path: 'user',select: 'name email img' });
+
     if (!orders) {
         throw new Error('Orders not found');
     }
