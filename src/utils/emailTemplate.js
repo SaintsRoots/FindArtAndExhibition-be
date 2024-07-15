@@ -52,12 +52,20 @@ export const sendEmailPersonBookedArts = (email, name, orderDetails) => {
       <p>Hi ${name},</p>
       <p>Your Arts order for ${orderDetails.totalItems} items has been successfully placed!</p>
       <p>Total price: ${orderDetails.totalPrice} FRW</p>
+      <p>Payments's Accounts:</p>
+      <ul>
+        <li>Momo Code: 454567</li>
+        <li>Airtel Code: 454567</li>
+        <li>Mobile Money: 0785161508</li>
+        <li>Airtel Money: 0725161508</li>
+      </ul>
       <p>Thank you for your purchase. We will notify you once your items are shipped.</p>
     `,
   };
 
   sendMail(emailTemplate);
 };
+
 
 // Approve Message
 
