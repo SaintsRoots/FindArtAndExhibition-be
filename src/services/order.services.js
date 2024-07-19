@@ -60,7 +60,7 @@ export const checkout = async (cartId, shippingAddress, paymentMethod) => {
 // get all order
 
 export const getOrdersUserID = async (userId) => {
-    const orders = await Order.find({ user: userId }).populate('items.product') .populate({ path: 'user',select: 'name email img' });
+    const orders = await Order.find({ user: userId }).populate('items.product') .populate({ path: 'user',select: 'name email img' }).sort({ createdAt: -1 });
 
     return orders;
 }
@@ -79,7 +79,7 @@ export const allOrder = async () => {
 
 
 export const getOrder = async (orderId) => {
-    const order = await Order.findById(orderId).populate('items.product') .populate({ path: 'user',select: 'name email img' });
+    const order = await Order.findById(orderId).populate('items.product') .populate({ path: 'user',select: 'name email img' }).sort({ createdAt: -1 });
 
     if (!order) {
         throw new Error('Order not found');
@@ -95,7 +95,7 @@ export const getOrdersByOwner = async (ownerId) => {
     const productIds = products.map(product => product._id);
 
     // Find all orders that contain these products
-    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product') .populate({ path: 'user',select: 'name email img' });
+    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product') .populate({ path: 'user',select: 'name email img' }).sort({ createdAt: -1 });
 
     if (!orders) {
         throw new Error('Orders not found');
@@ -112,7 +112,7 @@ export const getUsersByOwner = async (ownerId) => {
         const productIds = products.map(product => product._id);
 
         // Find all orders that contain these products
-        const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product');
+        const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product').sort({ createdAt: -1 });
 
         if (!orders || orders.length === 0) {
             throw new Error('Orders not found');

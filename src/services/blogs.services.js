@@ -20,7 +20,7 @@ export const getPost = async () => {
   return await Posts.find().populate({
     path: "creator",
     select: 'name email profile',
-  });
+  }).sort({ createdAt: -1 });
 };
 
 // service to retrieve a single post by id
@@ -29,7 +29,7 @@ export const getOnePost = async (postId) => {
   .populate({
     path: "creator",
     select: 'name email profile',
-  });
+  }).sort({ createdAt: -1 });
 };
 // get by posts category
 
@@ -37,7 +37,7 @@ export const getPostsByCategory = async (category) => {
     const posts = await Posts.find({ category }).populate({
         path: "creator",
         select: 'name email profile',
-      });
+      }).sort({ createdAt: -1 });
     if (!posts) {
         throw new Error("Posts category not found");
     }
@@ -49,7 +49,7 @@ export const getPostByTitle = async (title) => {
     const post = await Posts.findOne({ title }).populate({
         path: "creator",
         select: 'name email profile',
-      });
+      })
     if (!post) {
         throw new Error("Post title not found");
     }

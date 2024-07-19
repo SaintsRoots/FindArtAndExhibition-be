@@ -33,7 +33,7 @@ export const getAllArts = async () => {
 // get art by id
 
 export const getArtsById = async (id) => {
-    const art = await Arts.findById(id).populate('owner', 'name email profile');
+    const art = await Arts.findById(id).populate('owner', 'name email profile').sort({ createdAt: -1 });
     if (!art) {
         throw new Error("Art Id not found");
     }
@@ -42,7 +42,7 @@ export const getArtsById = async (id) => {
 // get by art category
 
 export const getArtsByCategory = async (category) => {
-    const art = await Arts.find({ category });
+    const art = await Arts.find({ category }).sort({ createdAt: -1 });
     if (!art) {
         throw new Error("Art category not found");
     }
@@ -51,7 +51,7 @@ export const getArtsByCategory = async (category) => {
 
 // get art by name
 export const getArtsByName = async (name) => {
-    const art = await Arts.findOne({ name }).populate('owner', 'name email profile');
+    const art = await Arts.findOne({ name }).populate('owner', 'name email profile').sort({ createdAt: -1 });
     if (!art) {
         throw new Error("Art name not found");
     }
@@ -62,12 +62,12 @@ export const getArtsByName = async (name) => {
 // get art by owner
 
 export const getArtsByOwner = async (ownerId) => {
-    return await Arts.find({ owner: ownerId });
+    return await Arts.find({ owner: ownerId }).sort({ createdAt: -1 });
 };
 
 // get art by loged owner
 export const getArtsByLoggedUser = async (ownerId) => {
-    const owners = await Arts.find({ owner: ownerId });
+    const owners = await Arts.find({ owner: ownerId }).sort({ createdAt: -1 });
     if (!owners) {
         throw new Error("Arts Id not found");
     }
