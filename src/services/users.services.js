@@ -6,12 +6,12 @@ import Code from "../models/resetCode.model";
 
 // Service to find all users
 export const findAllUsers = async () => {
-  return await User.find();
+  return await User.find().sort({ createdAt: -1 });
 };
 
 // Service to find a single user by id
 export const findUserById = async (id) => {
-  return await User.findById(id);
+  return await User.findById(id).sort({ createdAt: -1 });
 };
 
 // Service to create a new user
@@ -27,7 +27,7 @@ export const createUser = async (userData, file) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPass = await bcrypt.hash(userData.password, salt);
 
-  const status = userData.role === "Artist" ? "approved" : "pending";
+  const status = userData.role === "Artist" ? "pending" : "approved";
 
   return await User.create({
     name: userData.name,
@@ -69,7 +69,7 @@ export const approveStatusChange = async (id) => {
 
   let newStatus;
   let newRole = 'Artist';
-  
+
 
   if (user.status === 'pending') {
     newStatus = 'approved';

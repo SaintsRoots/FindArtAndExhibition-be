@@ -133,7 +133,7 @@ export const updateItemQuantity = async (userId, productId, newQuantity) => {
 
 
 export const getCart = async (userId) => {
-    const cart = await Cart.findOne({ user: userId, status: 'active' }).populate('items.product');
+    const cart = await Cart.findOne({ user: userId, status: 'active' }).populate('items.product').sort({ createdAt: -1 });
     if (!cart) throw new Error('Cart not found');
     return cart;
 };
