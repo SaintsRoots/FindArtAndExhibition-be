@@ -29,6 +29,9 @@ const artsSchema = new mongoose.Schema({
         type: Number,
         required: true,
     }
+}, {
+    timestamps: true,
+
 });
 
 const Arts = mongoose.models.arts || mongoose.model("arts", artsSchema);

@@ -40,7 +40,6 @@ export const checkout = async (cartId, shippingAddress, paymentMethod) => {
 
     const payment = new OrderPayment({
         order: order._id,
-        paymentMethod: paymentMethod,
         paymentStatus: 'pending',
         amount: cart.totalPrice,
     });

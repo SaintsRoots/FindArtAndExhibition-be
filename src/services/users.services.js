@@ -87,6 +87,37 @@ export const approveStatusChange = async (id) => {
 
   return user;
 };
+
+// cancel requesr to being Artists
+
+export const cancelArtistRequest = async (id) => {
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  let newStatus;
+  let newRole = 'User';
+
+
+  if (user.status === 'pending') {
+    newStatus = 'canceled';
+  } else if (user.status === 'approved') {
+    newStatus = 'pending';
+  } else if (user.status === 'canceled') {
+    newStatus = 'pending';
+  } else {
+    throw new Error('Invalid status');
+  }
+
+  user.status = newStatus;
+  user.role = newRole;
+  await user.save();
+
+  return user;
+};
+
 // Approve status change
 export const approveAdminStatusChange = async (id) => {
   const user = await User.findById(id);

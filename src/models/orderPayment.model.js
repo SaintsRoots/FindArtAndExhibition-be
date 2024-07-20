@@ -7,10 +7,6 @@ const orderPaymentSchema = new mongoose.Schema(
             ref: 'Order',
             required: true,
         },
-        paymentMethod: {
-            type: String,
-            required: true,
-        },
         paymentDate: {
             type: Date,
             required: true,

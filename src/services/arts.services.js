@@ -27,7 +27,7 @@ export const createArts = async (artsData, file, user) => {
 // get All arts
 
 export const getAllArts = async () => {
-    return await Arts.find();
+    return await Arts.find().sort({ createdAt: -1 });
 }
 
 // get art by id
