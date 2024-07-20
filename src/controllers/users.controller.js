@@ -109,6 +109,24 @@ export const approveStatus = async (req, res) => {
     });
   }
 };
+export const cancelArtistRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UserService.cancelArtistRequest(id);
+    sendEmailApproveArts(user.email, user.name, user.role, user.updatedAt);
+    return res.status(200).json({
+      status: "200",
+      message: `Account status changed to ${user.status}`,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "500",
+      message: "Failed to change account status",
+      error: error.message,
+    });
+  }
+};
 // Approve status change
 export const approveAdminStatus = async (req, res) => {
   try {
