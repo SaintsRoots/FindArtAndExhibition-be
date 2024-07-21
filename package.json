@@ -4,6 +4,7 @@
   "description": "FIND ART SYSTEM AND EXHIBITION API",
   "main": "index.js",
   "scripts": {
+    "start:clean": "nodemon --exec babel-node  ./src/services/cleaning.js",
     "start": "npm run build && node ./build/src/index.js",
     "start:dev": "nodemon --exec babel-node ./src/index.js",
     "clean": "rm -rf build && mkdir build",
