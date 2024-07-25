@@ -875,7 +875,7 @@ const options = {
                 description: "Add item to Order using cart Id",
                 parameters: [
                     {
-                        name: "cartId",
+                        name: "orderId",
                         in: "path",
                         required: true,
                         schema: {
