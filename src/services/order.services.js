@@ -5,7 +5,7 @@ import OrderPayment from '../models/orderPayment.model';
 import mongoose from 'mongoose';
 import User from '../models/user.models';
 
-export const checkout = async (cartId, shippingAddress, paymentMethod) => {
+export const checkout = async (cartId, shippingAddress) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -56,10 +56,44 @@ export const checkout = async (cartId, shippingAddress, paymentMethod) => {
     return order;
 }
 
+// complete checkout
+
+export const completeCheckout = async (orderId) => {
+
+    try {
+        const order = await Order.findById(orderId);
+        if (!order) {
+            throw new Error('Order not found');
+        }
+
+        let newStatus;
+        // Valid statuses: ['pending', 'completed', 'canceled']
+        if (order.status === 'pending') {
+            newStatus = 'completed';
+        } else if (order.status === 'completed') {
+            newStatus = 'canceled';
+        } else if (order.status === 'canceled') {
+            newStatus = 'pending';
+        } else {
+            throw new Error('Invalid status');
+        }
+
+        order.status = newStatus;
+        await order.save();
+        return order;
+    } catch (error) {
+        console.error('Error completing checkout:', error);
+        throw error;
+    }
+};
+
+
+
+
 // get all order
 
 export const getOrdersUserID = async (userId) => {
-    const orders = await Order.find({ user: userId }).populate('items.product') .populate({ path: 'user',select: 'name email img' }).sort({ createdAt: -1 });
+    const orders = await Order.find({ user: userId }).populate('items.product').populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
 
     return orders;
 }
@@ -72,18 +106,23 @@ export const allOrder = async () => {
                 select: 'name'
             }
         })
-        .populate({ path: 'user',select: 'name email img' });
+        .populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
     return orders;
 };
 
 
 export const getOrder = async (orderId) => {
-    const order = await Order.findById(orderId).populate('items.product') .populate({ path: 'user',select: 'name email img' }).sort({ createdAt: -1 });
-
-    if (!order) {
-        throw new Error('Order not found');
-    }
-    return order;
+    console.log(orderId);
+    const orders = await Order.find(orderId)
+        .populate({
+            path: 'items.product',
+            populate: {
+                path: 'owner',
+                select: 'name'
+            }
+        })
+        .populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
+    return orders;
 }
 
 export const getOrdersByOwner = async (ownerId) => {
@@ -94,7 +133,7 @@ export const getOrdersByOwner = async (ownerId) => {
     const productIds = products.map(product => product._id);
 
     // Find all orders that contain these products
-    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product') .populate({ path: 'user',select: 'name email img' }).sort({ createdAt: -1 });
+    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product').populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
 
     if (!orders) {
         throw new Error('Orders not found');

@@ -5,9 +5,9 @@ export const checkoutOrder = async (req, res) => {
     try {
         const { cartId } = req.params;
         const { email, name } = req.User;
-        const { shippingAddress, paymentMethod } = req.body;
+        const { shippingAddress } = req.body;
 
-        const order = await orderService.checkout(cartId, shippingAddress, paymentMethod);
+        const order = await orderService.checkout(cartId, shippingAddress);
         // Send confirmation email
         const orderDetails = {
             totalItems: order.totalItems,
@@ -29,11 +29,33 @@ export const checkoutOrder = async (req, res) => {
     }
 };
 
+
+// completeCheckout
+export const completeCheckout = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const order = await orderService.completeCheckout(orderId);
+        return res.status(200).json({
+            message: `Order status updated to ${order.status}`,
+            data: order,
+        });
+    } catch (error) {
+        console.error('Complete checkout error:', error);
+        return res.status(500).json({
+            message: "Failed to change order status",
+            error: error.message,
+        });
+    }
+};
+
+
+
 //  Controller to get an order by ID
 export const getOrderById = async (req, res) => {
     try {
-        const { orderId } = req.params;
-        const order = await orderService.getOrder(orderId);
+        const { id } = req.params;
+        console.log("idd", id)
+        const order = await orderService.getOrder(id);
         return res.status(200).json({
             message: "Order retrieved successfully",
             data: order
