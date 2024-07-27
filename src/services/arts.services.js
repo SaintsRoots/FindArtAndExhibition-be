@@ -33,7 +33,7 @@ export const getAllArts = async () => {
 // get art by id
 
 export const getArtsById = async (id) => {
-    const art = await Arts.findById(id).populate('owner', 'name email profile').sort({ createdAt: -1 });
+    const art = await Arts.findById(id).populate('owner', 'name email img').sort({ createdAt: -1 });
     if (!art) {
         throw new Error("Art Id not found");
     }
@@ -51,7 +51,7 @@ export const getArtsByCategory = async (category) => {
 
 // get art by name
 export const getArtsByName = async (name) => {
-    const art = await Arts.findOne({ name }).populate('owner', 'name email profile').sort({ createdAt: -1 });
+    const art = await Arts.findOne({ name }).populate('owner', 'name email img').sort({ createdAt: -1 });
     if (!art) {
         throw new Error("Art name not found");
     }
