@@ -10,7 +10,7 @@ cloudinary.config({
 export const uploadToCloud = async (file, res) => {
     try {
         const univeUploads = await cloudinary.uploader.upload(file.path, {
-            folder: "Hova Ai",
+            folder: "Arts Finder",
             use_filename: true,
         });
         return univeUploads;

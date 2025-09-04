@@ -7,6 +7,7 @@ import orderRouter from "./order.routes";
 import postRoutes from "./blogs.routes";
 import messageRoutes from "./contacts.routes";
 import testimonialRoutes from "./testimonials.routes";
+import messageRoute from "./message.routes";
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.use("/checkout", orderRouter);
 router.use("/posts", postRoutes);
 router.use("/messages", messageRoutes);
 router.use("/testimonials", testimonialRoutes);
+router.use("/messages", messageRoute);
 
 
 export default router;
