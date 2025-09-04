@@ -31,6 +31,7 @@ export const createUser = async (userData, file) => {
 
   return await User.create({
     name: userData.name,
+    isAdmin: userData.role === "Admin",
     email: userData.email,
     password: hashedPass,
     img: result?.secure_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
