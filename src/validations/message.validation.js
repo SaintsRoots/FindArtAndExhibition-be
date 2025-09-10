@@ -4,7 +4,7 @@ export const validateSendMessage = (data) => {
     const schema = Joi.object({
         sender: Joi.string().required(),
         receiver: Joi.string().required(),
-        content: Joi.string().required().min(1),
+        content: Joi.string().allow(null, '').optional(),
         messageType: Joi.string().valid('text', 'image', 'file').default('text'),
     });
     return schema.validate(data);

@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema({
     participants: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'users',
         required: true
     }],
     lastMessage: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'messages'
     },
     lastMessageAt: {
