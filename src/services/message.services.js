@@ -96,7 +96,7 @@ export const findAllArtists = async () => {
     return await User.find({
         role: 'Artist',
         status: 'approved'
-    }).select('name email img province district role');
+    }).select('name email img province district sector role');
 };
 
 // Service to get unread message count
