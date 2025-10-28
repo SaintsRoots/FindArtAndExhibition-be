@@ -5,7 +5,8 @@ import router from "./routes/index.js";
 import dbConnector from "./app.js";
 import morgan from "morgan";
 import cors from "cors";
-
+import * as http from "http";
+import { config } from "./utils/socket.util.js";
 
 dotenv.config();
 const app = express();
@@ -16,7 +17,6 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 
 // Routes
 app.use("/api/v1", router);
@@ -29,11 +29,13 @@ app.get("/", (req, res) => {
   });
 });
 
-
 // Database connection
 dbConnector;
 
+const server = http.createServer(app);
+config(server);
+
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server running on port: http://localhost:${PORT}`);
 });
