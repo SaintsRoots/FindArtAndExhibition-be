@@ -18,6 +18,10 @@ export class StripeService {
     shippingAddress
   ) {
     try {
+      console.log(
+        "Converted amount &&&&&&&&&&",
+        Math.round((amount / 1507) * 100)
+      );
       const session = await this.stripe.checkout.sessions.create({
         line_items: [
           {
@@ -27,7 +31,7 @@ export class StripeService {
                 name: "Art Purchase",
                 description: "Purchase of artwork from your store",
               },
-              unit_amount: Math.round(amount * 100), // Convert to cents
+              unit_amount: Math.round((amount / 1507) * 100), // Convert to cents
             },
             quantity: 1,
           },
