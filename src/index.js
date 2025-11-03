@@ -15,6 +15,12 @@ const PORT = process.env.PORT || 4200;
 // Middleware
 app.use(cors());
 app.use(morgan("dev"));
+
+app.use(
+  "/api/v1/checkout/stripe/webhook",
+  express.raw({ type: "application/json" })
+);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

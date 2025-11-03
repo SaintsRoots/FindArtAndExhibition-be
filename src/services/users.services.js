@@ -1,5 +1,5 @@
 import User from "../models/user.models";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { uploadToCloud } from "../helper/cloud";
 import { sendResetEmail } from "../utils/emailTemplate";
 import Code from "../models/resetCode.model";
@@ -16,7 +16,6 @@ export const findUserById = async (id) => {
 
 // Service to create a new user
 export const createUser = async (userData, file) => {
-
   const existing = await User.findOne({ email: userData.email });
   if (existing) {
     throw new Error("Email already exists");
@@ -34,7 +33,9 @@ export const createUser = async (userData, file) => {
     isAdmin: userData.role === "Admin",
     email: userData.email,
     password: hashedPass,
-    img: result?.secure_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+    img:
+      result?.secure_url ||
+      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
     status: status,
     role: userData.role || "User",
   });
@@ -65,21 +66,20 @@ export const approveStatusChange = async (id) => {
   const user = await User.findById(id);
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
   let newStatus;
-  let newRole = 'Artist';
+  let newRole = "Artist";
 
-
-  if (user.status === 'pending') {
-    newStatus = 'approved';
-  } else if (user.status === 'approved') {
-    newStatus = 'canceled';
-  } else if (user.status === 'canceled') {
-    newStatus = 'pending';
+  if (user.status === "pending") {
+    newStatus = "approved";
+  } else if (user.status === "approved") {
+    newStatus = "canceled";
+  } else if (user.status === "canceled") {
+    newStatus = "pending";
   } else {
-    throw new Error('Invalid status');
+    throw new Error("Invalid status");
   }
 
   user.status = newStatus;
@@ -95,21 +95,20 @@ export const cancelArtistRequest = async (id) => {
   const user = await User.findById(id);
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
   let newStatus;
-  let newRole = 'User';
+  let newRole = "User";
 
-
-  if (user.status === 'pending') {
-    newStatus = 'canceled';
-  } else if (user.status === 'approved') {
-    newStatus = 'pending';
-  } else if (user.status === 'canceled') {
-    newStatus = 'pending';
+  if (user.status === "pending") {
+    newStatus = "canceled";
+  } else if (user.status === "approved") {
+    newStatus = "pending";
+  } else if (user.status === "canceled") {
+    newStatus = "pending";
   } else {
-    throw new Error('Invalid status');
+    throw new Error("Invalid status");
   }
 
   user.status = newStatus;
@@ -124,21 +123,21 @@ export const approveAdminStatusChange = async (id) => {
   const user = await User.findById(id);
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
   let newStatus;
-  let newRole = 'Admin';
+  let newRole = "Admin";
   let isAdmin = true;
 
-  if (user.status === 'pending') {
-    newStatus = 'approved';
-  } else if (user.status === 'approved') {
-    newStatus = 'canceled';
-  } else if (user.status === 'canceled') {
-    newStatus = 'pending';
+  if (user.status === "pending") {
+    newStatus = "approved";
+  } else if (user.status === "approved") {
+    newStatus = "canceled";
+  } else if (user.status === "canceled") {
+    newStatus = "pending";
   } else {
-    throw new Error('Invalid status');
+    throw new Error("Invalid status");
   }
 
   user.status = newStatus;
@@ -149,13 +148,10 @@ export const approveAdminStatusChange = async (id) => {
   return user;
 };
 
-
-
 // Service to delete a user by id
 export const deleteUserById = async (id) => {
   return await User.findByIdAndDelete(id);
 };
-
 
 // Service to Login a user
 
@@ -190,7 +186,11 @@ export const forgotPasswordService = async (userEmail) => {
 };
 
 // service to reset password
-export const resetPasswordService = async (resetCode, password, confirmPassword) => {
+export const resetPasswordService = async (
+  resetCode,
+  password,
+  confirmPassword
+) => {
   const code = await Code.findOne({ code: resetCode });
   if (!code) {
     throw new Error("Invalid Code");
@@ -210,15 +210,14 @@ export const resetPasswordService = async (resetCode, password, confirmPassword)
   await Code.findByIdAndDelete(code._id);
 };
 
-
 // service to change user password
 export const changePassword = async (id, passData) => {
   const { current_password, new_password, confirm_password } = passData;
-  const user = await User.findById(id)
+  const user = await User.findById(id);
   if (!user) {
     throw new Error("User not found");
   }
-  const passwordMatch = await bcrypt.compare(current_password, user.password)
+  const passwordMatch = await bcrypt.compare(current_password, user.password);
   if (!passwordMatch) {
     throw new Error("Invalid Password");
   }
@@ -231,5 +230,3 @@ export const changePassword = async (id, passData) => {
     password: hashedPassword,
   });
 };
-
-

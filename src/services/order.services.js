@@ -1,173 +1,225 @@
-import Cart from '../models/cart.model';
-import Order from '../models/order.model';
-import Arts from '../models/arts.model';
-import OrderPayment from '../models/orderPayment.model';
-import mongoose from 'mongoose';
-import User from '../models/user.models';
+import Cart from "../models/cart.model";
+import Order from "../models/order.model";
+import Arts from "../models/arts.model";
+import OrderPayment from "../models/orderPayment.model";
+import mongoose from "mongoose";
+import User from "../models/user.models";
 
-export const checkout = async (cartId, shippingAddress) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+// export const checkout = async (cartId, shippingAddress) => {
+//     const session = await mongoose.startSession();
+//     session.startTransaction();
 
-    const cart = await Cart.findById(cartId).populate('items.product');
-    if (!cart) {
-        await session.abortTransaction();
-        session.endSession();
-        return res.status(404).json({ message: 'Cart not found' });
+//     const cart = await Cart.findById(cartId).populate('items.product');
+//     if (!cart) {
+//         await session.abortTransaction();
+//         session.endSession();
+//         return res.status(404).json({ message: 'Cart not found' });
+//     }
+
+//     // Reduce available_arts for each product in the cart
+//     for (let item of cart.items) {
+//         const product = item.product;
+//         if (product.available_arts < item.quantity) {
+//             await session.abortTransaction();
+//             session.endSession();
+//             return res.status(400).json({ message: `Not enough stock for ${product.name}` });
+//         }
+//         product.available_arts -= item.quantity;
+//         await product.save({ session });
+//     }
+
+//     const order = new Order({
+//         user: cart.user,
+//         items: cart.items,
+//         totalPrice: cart.totalPrice,
+//         totalItems: cart.totalItems,
+//         shippingAddress: shippingAddress,
+//     });
+
+//     await order.save({ session });
+
+//     const payment = new OrderPayment({
+//         order: order._id,
+//         paymentStatus: 'pending',
+//         amount: cart.totalPrice,
+//     });
+
+//     await payment.save({ session });
+
+//     // Update cart status to 'completed'
+//     cart.status = 'completed';
+//     await cart.save({ session });
+
+//     await session.commitTransaction();
+//     session.endSession();
+
+//     return order;
+// }
+
+export const checkout = async (cartId, shippingAddress, session) => {
+  const cart = await Cart.findById(cartId)
+    .populate("items.product")
+    .session(session);
+  if (!cart) {
+    throw new Error("Cart not found");
+  }
+
+  // Reduce available_arts for each product in the cart
+  for (let item of cart.items) {
+    const product = item.product;
+    if (product.available_arts < item.quantity) {
+      throw new Error(`Not enough stock for ${product.name}`);
     }
+    product.available_arts -= item.quantity;
+    await product.save({ session });
+  }
 
-    // Reduce available_arts for each product in the cart
-    for (let item of cart.items) {
-        const product = item.product;
-        if (product.available_arts < item.quantity) {
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(400).json({ message: `Not enough stock for ${product.name}` });
-        }
-        product.available_arts -= item.quantity;
-        await product.save({ session });
-    }
+  const order = new Order({
+    user: cart.user,
+    items: cart.items,
+    totalPrice: cart.totalPrice,
+    totalItems: cart.totalItems,
+    shippingAddress: shippingAddress,
+    status: "completed",
+  });
 
-    const order = new Order({
-        user: cart.user,
-        items: cart.items,
-        totalPrice: cart.totalPrice,
-        totalItems: cart.totalItems,
-        shippingAddress: shippingAddress,
-    });
+  await order.save({ session });
 
-    await order.save({ session });
+  const payment = new OrderPayment({
+    order: order._id,
+    paymentStatus: "completed",
+    amount: cart.totalPrice,
+    paymentMethod: "stripe",
+  });
 
-    const payment = new OrderPayment({
-        order: order._id,
-        paymentStatus: 'pending',
-        amount: cart.totalPrice,
-    });
+  await payment.save({ session });
 
-    await payment.save({ session });
+  // Update cart status to 'completed'
+  cart.status = "completed";
+  await cart.save({ session });
 
-    // Update cart status to 'completed'
-    cart.status = 'completed';
-    await cart.save({ session });
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return order;
-}
+  return order;
+};
 
 // complete checkout
 
 export const completeCheckout = async (orderId) => {
-
-    try {
-        const order = await Order.findById(orderId);
-        if (!order) {
-            throw new Error('Order not found');
-        }
-
-        let newStatus;
-        // Valid statuses: ['pending', 'completed', 'canceled']
-        if (order.status === 'pending') {
-            newStatus = 'completed';
-        } else if (order.status === 'completed') {
-            newStatus = 'canceled';
-        } else if (order.status === 'canceled') {
-            newStatus = 'pending';
-        } else {
-            throw new Error('Invalid status');
-        }
-
-        order.status = newStatus;
-        await order.save();
-        return order;
-    } catch (error) {
-        console.error('Error completing checkout:', error);
-        throw error;
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      throw new Error("Order not found");
     }
+
+    let newStatus;
+    // Valid statuses: ['pending', 'completed', 'canceled']
+    if (order.status === "pending") {
+      newStatus = "completed";
+    } else if (order.status === "completed") {
+      newStatus = "canceled";
+    } else if (order.status === "canceled") {
+      newStatus = "pending";
+    } else {
+      throw new Error("Invalid status");
+    }
+
+    order.status = newStatus;
+    await order.save();
+    return order;
+  } catch (error) {
+    console.error("Error completing checkout:", error);
+    throw error;
+  }
 };
-
-
-
 
 // get all order
 
 export const getOrdersUserID = async (userId) => {
-    const orders = await Order.find({ user: userId }).populate('items.product').populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
+  const orders = await Order.find({ user: userId })
+    .populate("items.product")
+    .populate({ path: "user", select: "name email img" })
+    .sort({ createdAt: -1 });
 
-    return orders;
-}
+  return orders;
+};
 export const allOrder = async () => {
-    const orders = await Order.find()
-        .populate({
-            path: 'items.product',
-            populate: {
-                path: 'owner',
-                select: 'name'
-            }
-        })
-        .populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
-    return orders;
+  const orders = await Order.find()
+    .populate({
+      path: "items.product",
+      populate: {
+        path: "owner",
+        select: "name",
+      },
+    })
+    .populate({ path: "user", select: "name email img" })
+    .sort({ createdAt: -1 });
+  return orders;
 };
 
-
 export const getOrder = async (orderId) => {
-    console.log(orderId);
-    const orders = await Order.find(orderId)
-        .populate({
-            path: 'items.product',
-            populate: {
-                path: 'owner',
-                select: 'name'
-            }
-        })
-        .populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
-    return orders;
-}
+  console.log(orderId);
+  const orders = await Order.find(orderId)
+    .populate({
+      path: "items.product",
+      populate: {
+        path: "owner",
+        select: "name",
+      },
+    })
+    .populate({ path: "user", select: "name email img" })
+    .sort({ createdAt: -1 });
+  return orders;
+};
 
 export const getOrdersByOwner = async (ownerId) => {
+  // Find all products owned by the owner
+  const products = await Arts.find({ owner: ownerId });
+
+  // Get all product IDs owned by the owner
+  const productIds = products.map((product) => product._id);
+
+  // Find all orders that contain these products
+  const orders = await Order.find({ "items.product": { $in: productIds } })
+    .populate("items.product")
+    .populate({ path: "user", select: "name email img" })
+    .sort({ createdAt: -1 });
+
+  if (!orders) {
+    throw new Error("Orders not found");
+  }
+  return orders;
+};
+
+export const getUsersByOwner = async (ownerId) => {
+  try {
     // Find all products owned by the owner
     const products = await Arts.find({ owner: ownerId });
 
     // Get all product IDs owned by the owner
-    const productIds = products.map(product => product._id);
+    const productIds = products.map((product) => product._id);
 
     // Find all orders that contain these products
-    const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product').populate({ path: 'user', select: 'name email img' }).sort({ createdAt: -1 });
+    const orders = await Order.find({ "items.product": { $in: productIds } })
+      .populate("items.product")
+      .sort({ createdAt: -1 });
 
-    if (!orders) {
-        throw new Error('Orders not found');
+    if (!orders || orders.length === 0) {
+      throw new Error("Orders not found");
     }
-    return orders;
-};
 
-export const getUsersByOwner = async (ownerId) => {
-    try {
-        // Find all products owned by the owner
-        const products = await Arts.find({ owner: ownerId });
+    // Extract unique user IDs from orders
+    const userIds = [...new Set(orders.map((order) => order.user.toString()))];
 
-        // Get all product IDs owned by the owner
-        const productIds = products.map(product => product._id);
+    // Populate user details
+    const users = await User.find({ _id: { $in: userIds } });
 
-        // Find all orders that contain these products
-        const orders = await Order.find({ 'items.product': { $in: productIds } }).populate('items.product').sort({ createdAt: -1 });
+    // Extract ordered products details
+    const orderedProducts = orders.flatMap((order) =>
+      order.items.map((item) => item.product)
+    );
 
-        if (!orders || orders.length === 0) {
-            throw new Error('Orders not found');
-        }
-
-        // Extract unique user IDs from orders
-        const userIds = [...new Set(orders.map(order => order.user.toString()))];
-
-        // Populate user details
-        const users = await User.find({ _id: { $in: userIds } });
-
-        // Extract ordered products details
-        const orderedProducts = orders.flatMap(order => order.items.map(item => item.product));
-
-        return { users, orderedProducts };
-    } catch (error) {
-        console.error('Error retrieving users and products:', error);
-        throw error;
-    }
+    return { users, orderedProducts };
+  } catch (error) {
+    console.error("Error retrieving users and products:", error);
+    throw error;
+  }
 };
