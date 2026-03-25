@@ -2,13 +2,16 @@ import nodemailer from "nodemailer";
 
 // 1. Create transporter ONCE outside the function for connection pooling
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  // service: "gmail",
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // Use SSL
+  port: 587,
+  secure: false, // Use TLS
   auth: {
     user: process.env.UserMailer,
     pass: process.env.PasswordMailer,
+  },
+  tls: {
+    rejectUnauthorized: false, // Allow self-signed certificates
   },
   // 2. Add explicit timeouts to prevent hanging
   connectionTimeout: 10000, // 10 seconds
