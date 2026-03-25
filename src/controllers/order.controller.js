@@ -1,8 +1,8 @@
 import * as orderService from "../services/order.services";
 import { sendEmailPersonBookedArts } from "../utils/emailTemplate";
 import { stripeService } from "../services/stripe.service.js";
-import mongoose from "mongoose";
-import Order from "../models/order.model";
+// import mongoose from "mongoose";
+// import Order from "../models/order.model";
 import Cart from "../models/cart.model";
 
 // export const checkoutOrder = async (req, res) => {
@@ -104,8 +104,26 @@ export const handleStripeWebhook = async (req, res) => {
   }
 
   try {
-    await stripeService.handleWebhook(event);
-    res.json({ received: true });
+    // await stripeService.handleWebhook(event);
+    // res.json({ received: true });
+    // ✅ Handle the event and get back order + user info for the email
+    const result = await stripeService.handleWebhook(event);
+ 
+    // ✅ Send confirmation email only after payment is confirmed
+    if (
+      event.type === "checkout.session.completed" &&
+      result?.email &&
+      result?.name &&
+      result?.order
+    ) {
+      const orderDetails = {
+        totalItems: result.order.totalItems ?? result.order.items?.length,
+        totalPrice: result.order.totalPrice,
+      };
+      sendEmailPersonBookedArts(result.email, result.name, orderDetails);
+    }
+ 
+    return res.json({ received: true });
   } catch (error) {
     console.error("Error handling webhook:", error);
     res.status(500).json({ error: "Webhook handler failed" });
