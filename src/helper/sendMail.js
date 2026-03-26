@@ -1,43 +1,62 @@
 import nodemailer from "nodemailer";
 
-// 1. Create transporter ONCE outside the function for connection pooling
-const transporter = nodemailer.createTransport({
-  // service: "gmail",
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // Use TLS
-  auth: {
-    user: process.env.UserMailer,
-    pass: process.env.PasswordMailer,
-  },
-  tls: {
-    rejectUnauthorized: false, // Allow self-signed certificates
-  },
-  // 2. Add explicit timeouts to prevent hanging
-  connectionTimeout: 10000, // 10 seconds
-  greetingTimeout: 5000,
-  socketTimeout: 15000,
-});
-
-export const sendMail = async (emailTemplate) => {
+export const sendMail = (emailTemplate) => {
   const { emailTo, subject, message } = emailTemplate;
-
-  const mailOptions = {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    port:587,
+    secure:false,
+    auth: {
+      user: process.env.UserMailer,
+      pass: process.env.PasswordMailer,
+    },
+  });
+  let mailOptions = {
     from: process.env.UserMailer,
     to: emailTo,
     subject,
     html: message,
   };
-
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${emailTo}: ${info.response}`);
-    return info;
-  } catch (error) {
-    console.error("Mail Error:", error.message);
-    // You might want to implement a retry logic here or log to a service
-    throw error; 
-  }
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + mailOptions.to, info.response);
+    }
+  });
 };
 
 export default sendMail;
+
+
+// import nodemailer from "nodemailer";
+
+// export const sendMail = async (emailTemplate) => {
+//   const { emailTo, subject, message } = emailTemplate;
+
+//   const transporter = nodemailer.createTransport({
+//     host: "smtp.gmail.com",
+//     port: 465,
+//     secure: true,
+//     auth: {
+//       user: process.env.UserMailer,
+//       pass: process.env.PasswordMailer,
+//     },
+//     connectionTimeout: 10000,
+//     greetingTimeout: 10000,
+//     socketTimeout: 10000,
+//   });
+
+//   try {
+//     await transporter.verify();
+//     const info = await transporter.sendMail({
+//       from: process.env.UserMailer,
+//       to: emailTo,
+//       subject,
+//       html: message,
+//     });
+//     console.log("Email sent:", emailTo, info.response);
+//   } catch (error) {
+//     console.error("sendMail error:", error);
+//   }
+// };
